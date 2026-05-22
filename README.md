@@ -17,6 +17,20 @@
 
 > **터미널 2개**가 필요합니다.
 
+### ⚠️ Windows PowerShell 사용 시 최초 1회 설정
+
+PowerShell은 기본적으로 `.ps1` 스크립트 실행을 차단하기 때문에 `npm` 명령어가 동작하지 않습니다.
+**PowerShell을 관리자 권한으로 열고** 아래 명령어를 1회 실행해주세요.
+
+```powershell
+Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
+```
+
+> 재부팅 후에도 유지되며 다시 설정할 필요 없습니다.
+> PowerShell 대신 **cmd(명령 프롬프트)** 를 사용하면 이 설정 없이도 동작합니다.
+
+---
+
 ### 0. 최초 1회 — 의존성 설치
 
 ```bash
