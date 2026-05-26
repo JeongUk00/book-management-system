@@ -8,6 +8,7 @@ export default function CoverGenerator({ book, onCoverSaved, isGenerating, setIs
   const [quality, setQuality] = useState('low')
   const [size, setSize] = useState('1024x1536')
   const [outputFormat, setOutputFormat] = useState('png')
+  const [userPrompt, setUserPrompt] = useState('')
 
   const [isSaving, setIsSaving] = useState(false)
   const [previewUrl, setPreviewUrl] = useState(null)
@@ -20,10 +21,14 @@ export default function CoverGenerator({ book, onCoverSaved, isGenerating, setIs
     const content = book.content
       ? `. The book is about: ${book.content.slice(0, 200)}`
       : ''
+    const request = userPrompt.trim()
+      ? ` Please reflect the user request: ${userPrompt.trim()}`
+      : ''
     return (
       base +
       author +
       content +
+      request +
       '. Professional book cover design, high quality illustration, visually appealing.'
     )
   }
@@ -163,6 +168,22 @@ export default function CoverGenerator({ book, onCoverSaved, isGenerating, setIs
               <option value="jpeg">포맷: JPEG</option>
               <option value="webp">포맷: WebP</option>
             </select>
+          </div>
+        </div>
+
+        <div className="cover-generator-field">
+          <label className="cover-generator-label">추가 요청 (최대 200자)</label>
+          <textarea
+            className="cover-generator-textarea"
+            value={userPrompt}
+            onChange={e => setUserPrompt(e.target.value.slice(0, 200))}
+            maxLength={200}
+            placeholder="표지에 반영할 스타일, 분위기, 강조하고 싶은 키워드를 입력하세요."
+            rows={4}
+            disabled={isGenerating}
+          />
+          <div className="cover-generator-help">
+            {userPrompt.length}/200
           </div>
         </div>
 
