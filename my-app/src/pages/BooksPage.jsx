@@ -67,16 +67,10 @@ export default function BooksPage() {
     if (!ok) return
 
     try {
-      const responses = await Promise.all(
-        selectedIds.map(id =>
-          fetch(`${BOOKS_URL}/${id}`, {
-            method: 'DELETE',
-          })
-        )
-      )
-
-      const hasFailed = responses.some(res => !res.ok)
-      if (hasFailed) throw new Error('일부 도서 삭제에 실패했습니다.')
+      for (const id of selectedIds) {
+        const res = await fetch(`${BOOKS_URL}/${id}`, { method: 'DELETE' })
+        if (!res.ok) throw new Error(`도서(${id}) 삭제에 실패했습니다.`)
+      }
 
       setBooks(prev => prev.filter(book => !selectedIds.includes(book.id)))
       setSelectedIds([])
