@@ -34,7 +34,7 @@ export default function CoverGenerator({ book, onCoverSaved }) {
     setError('')
 
     if (!apiKey.trim()) {
-      setError('OpenAI API Key를 입력해주세요.')
+      setError('OpenAI API Key를 입력해주세.')
       return
     }
 
