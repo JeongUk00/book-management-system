@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 const TITLE_MAX_LENGTH = 30
-const AUTHOR_MAX_LENGTH = 5
+const AUTHOR_MAX_LENGTH = 20
 const CONTENT_MIN_LENGTH = 10
 const CONTENT_MAX_LENGTH = 1000
 
