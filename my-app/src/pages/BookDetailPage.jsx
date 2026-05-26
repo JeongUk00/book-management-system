@@ -35,10 +35,6 @@ export default function BookDetailPage() {
     }
   }, [book])
 
-  const [book, setBook] = useState(null) 
-  const [isLoading, setIsLoading] = useState(true) 
-  const [error, setError] = useState('') 
-  const [toast, setToast] = useState('') 
 
   //useEffect : 도서 상세 정보 불러오기 -> 서버에서 불러옴
   useEffect(() => {
