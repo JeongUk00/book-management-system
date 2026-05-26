@@ -42,7 +42,7 @@ export default function BookDetailPage() {
 
   // 도서 삭제
   const handleDelete = async () => {
-    if (!shouldProceedWhileGenerating()) return
+    if (!whileGenerating()) return
     if (!window.confirm(`"${book.title}" 도서를 삭제하시겠습니까?`)) return
     try {
       const res = await fetch(`${BOOKS_URL}/${id}`, { method: 'DELETE' })
@@ -59,7 +59,7 @@ export default function BookDetailPage() {
     showToast('✔️ 표지가 저장되었습니다!')
   }
 
-  const shouldProceedWhileGenerating = () => {
+  const whileGenerating = () => {
     if (!isGenerating) return true
     return window.confirm(
       'AI 이미지 생성 중입니다. 진행하면 생성 작업이 취소될 수 있습니다. 계속하시겠습니까?'
@@ -83,7 +83,7 @@ export default function BookDetailPage() {
         to="/"
         className="back-link"
         onClick={(e) => {
-          if (!shouldProceedWhileGenerating()) e.preventDefault()
+          if (!whileGenerating()) e.preventDefault()
         }}
       >
         ← 도서 목록으로
@@ -141,7 +141,7 @@ export default function BookDetailPage() {
               to={`/books/${id}/edit`}
               className="btn btn-outline"
               onClick={(e) => {
-                if (!shouldProceedWhileGenerating()) e.preventDefault()
+                if (!whileGenerating()) e.preventDefault()
               }}
             >
               ✏️ 수정
