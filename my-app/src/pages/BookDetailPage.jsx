@@ -20,7 +20,7 @@ export default function BookDetailPage() {
   const [book, setBook] = useState(null)
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState('')
-  const [toast, setToast] = useState('')
+  const [saveModal, setSaveModal] = useState(false)  // 추가
 
   useEffect(() => {
     const load = async () => {
@@ -43,24 +43,20 @@ export default function BookDetailPage() {
   const handleDelete = async () => {
     if (!window.confirm(`"${book.title}" 도서를 삭제하시겠습니까?`)) return
     try {
-      const res = await fetch(`${BOOKS_URL}/${id}`, { method: 'DELETE' })
-      if (!res.ok) throw new Error('삭제에 실패했습니다.')
-      navigate('/')
+      const res = await fetch(`${BOOKS_URL}/${id}`, { method: 'DELETE' }) 
+      // http://localhost:3000/books/1 DELETE 요청 보내고 응답 오면 res에 저장
+      if (!res.ok) throw new Error('삭제에 실패했습니다.')  
+        // ok 아닐 경우 throw로 에러 강제 발생 -> catch로 
+      navigate('/') // 메인 목록 페이지로 이동
     } catch (err) {
       setError(err.message)
     }
   }
 
-  // AI 표지 저장 후 상태 즉시 반영
+  // AI 표지 저장 후 상태 즉시 반영 (토스트메시지에서 모달로 수정)
   const handleCoverSaved = (newCoverUrl) => {
-    setBook(prev => ({ ...prev, coverImageUrl: newCoverUrl }))
-    showToast('✅ 표지가 저장되었습니다!')
-  }
-
-  // 토스트 메시지
-  const showToast = (msg) => {
-    setToast(msg)
-    setTimeout(() => setToast(''), 2800)
+  setBook(prev => ({ ...prev, coverImageUrl: newCoverUrl }))
+  setSaveModal(true)
   }
 
   if (isLoading) return <main className="page"><LoadingSpinner message="도서 정보를 불러오는 중..." /></main>
@@ -130,9 +126,20 @@ export default function BookDetailPage() {
           </div>
         </div>
       </div>
-
-      {/* 토스트 메시지 */}
-      {toast && <div className="toast">{toast}</div>}
+          
+      {/* 모달 추가 */}
+      {saveModal && (
+        <div className="modal-overlay">
+          <div className="modal-box" style={{ flexDirection: 'column', alignItems: 'center', gap: 16, maxWidth: 340 }}>
+            <p style={{ fontSize: '1.1rem', fontWeight: 700, color: 'var(--gray-800)' }}>
+              ✅ 표지가 저장되었습니다!
+            </p>
+            <button className="btn btn-primary" onClick={() => setSaveModal(false)}>
+              확인
+            </button>
+          </div>
+        </div>
+      )}
     </main>
   )
 }
