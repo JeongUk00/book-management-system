@@ -5,67 +5,69 @@ import CoverGenerator from '../components/book/CoverGenerator'
 import LoadingSpinner from '../components/common/LoadingSpinner'
 import ErrorMessage from '../components/common/ErrorMessage'
 
-function formatDate(iso) {
-  if (!iso) return '-'
-  return new Date(iso).toLocaleDateString('ko-KR', {
+function formatDate(iso) { 
+  if (!iso) return '-' 
+  return new Date(iso).toLocaleDateString('ko-KR', { 
     year: 'numeric', month: 'long', day: 'numeric',
-    hour: '2-digit', minute: '2-digit',
+    hour: '2-digit', minute: '2-digit', 
   })
 }
 
-export default function BookDetailPage() {
-  const { id } = useParams()
-  const navigate = useNavigate()
+export default function BookDetailPage() { 
 
-  const [book, setBook] = useState(null)
-  const [isLoading, setIsLoading] = useState(true)
-  const [error, setError] = useState('')
-  const [toast, setToast] = useState('')
+  const { id } = useParams() 
+  const navigate = useNavigate() 
 
+  const [book, setBook] = useState(null) 
+  const [isLoading, setIsLoading] = useState(true) 
+  const [error, setError] = useState('') 
+  const [toast, setToast] = useState('') 
+
+  //useEffect : 도서 상세 정보 불러오기 -> 서버에서 불러옴
   useEffect(() => {
     const load = async () => {
       try {
-        const res = await fetch(`${BOOKS_URL}/${id}`)
-        if (res.status === 404) throw new Error('해당 도서를 찾을 수 없습니다.')
-        if (!res.ok) throw new Error(`서버 오류 (${res.status})`)
-        const data = await res.json()
-        setBook(data)
+        const res = await fetch(`${BOOKS_URL}/${id}`) 
+        if (res.status === 404) throw new Error('해당 도서를 찾을 수 없습니다.') 
+        if (!res.ok) throw new Error(`서버 오류 (${res.status})`) 
+        const data = await res.json() 
+        setBook(data) 
       } catch (err) {
         setError(err.message)
       } finally {
-        setIsLoading(false)
+        setIsLoading(false) 
       }
     }
     load()
-  }, [id])
+  }, [id]) 
 
   // 도서 삭제
   const handleDelete = async () => {
-    if (!window.confirm(`"${book.title}" 도서를 삭제하시겠습니까?`)) return
+    if (!window.confirm(`"${book.title}" 도서를 삭제하시겠습니까?`)) return //삭제하기 전 확인창
     try {
-      const res = await fetch(`${BOOKS_URL}/${id}`, { method: 'DELETE' })
-      if (!res.ok) throw new Error('삭제에 실패했습니다.')
-      navigate('/')
+      const res = await fetch(`${BOOKS_URL}/${id}`, { method: 'DELETE' }) 
+      if (!res.ok) throw new Error('삭제에 실패했습니다.') 
+      navigate('/') 
     } catch (err) {
       setError(err.message)
     }
   }
 
   // AI 표지 저장 후 상태 즉시 반영
-  const handleCoverSaved = (newCoverUrl) => {
-    setBook(prev => ({ ...prev, coverImageUrl: newCoverUrl }))
+  const handleCoverSaved = (newCoverUrl) => { 
+    setBook(prev => ({ ...prev, coverImageUrl: newCoverUrl })) 
     showToast('✅ 표지가 저장되었습니다!')
   }
 
   // 토스트 메시지
-  const showToast = (msg) => {
-    setToast(msg)
+  const showToast = (msg) => { 
+    setToast(msg) 
     setTimeout(() => setToast(''), 2800)
   }
 
   if (isLoading) return <main className="page"><LoadingSpinner message="도서 정보를 불러오는 중..." /></main>
   if (error) return <main className="page"><ErrorMessage message={error} /></main>
-  if (!book) return null
+  if (!book) return null 
 
   return (
     <main className="page">
@@ -75,7 +77,7 @@ export default function BookDetailPage() {
       <div className="book-detail">
         {/* 왼쪽: 표지 + AI 생성기 */}
         <div className="book-detail-cover-col">
-          {book.coverImageUrl ? (
+          {book.coverImageUrl ? ( //조건부 렌더링 시작
             <img
               src={book.coverImageUrl}
               alt={`${book.title} 표지`}
@@ -103,7 +105,7 @@ export default function BookDetailPage() {
 
           {/* 메타 정보 */}
           <div className="book-meta">
-            <span className="book-meta-item">📅 등록: {formatDate(book.createdAt)}</span>
+            <span className="book-meta-item">📅 등록: {formatDate(book.createdAt)}</span> 
             <span className="book-meta-item">🔄 수정: {formatDate(book.updatedAt)}</span>
           </div>
 
@@ -123,7 +125,7 @@ export default function BookDetailPage() {
             </Link>
             <button
               className="btn btn-danger-outline"
-              onClick={handleDelete}
+              onClick={handleDelete} //버튼 클릭하면 handleDelete 함수 실행 : 확인창->delete 요청
             >
               🗑️ 삭제
             </button>
