@@ -7,14 +7,22 @@ api_key.txt
 # 로컬 DB (각자 테스트 데이터 충돌 방지 — db.sample.json을 복사해서 사용)
 db.json
 
-# 의존성
+# ── Frontend ──────────────────────────────
 node_modules/
-
-# 빌드 결과물
 dist/
 dist-ssr/
 
-# 로그
+# ── Backend (Spring Boot) ──────────────────
+book-server/target/
+book-server/.mvn/wrapper/maven-wrapper.jar
+book-server/.idea/
+book-server/*.iml
+book-server/*.iws
+book-server/*.ipr
+*.mv.db
+*.trace.db
+
+# ── 공통 ──────────────────────────────────
 *.log
 npm-debug.log*
 
