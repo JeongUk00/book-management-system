@@ -7,11 +7,11 @@ import com.aivle.bookapp.dto.CoverUpdateRequest;
 import com.aivle.bookapp.service.BookService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/books")
@@ -22,8 +22,8 @@ public class BookController {
 
     // GET /books - 목록 조회
     @GetMapping
-    public ResponseEntity<List<BookResponse>> findAll() {
-        return ResponseEntity.ok(bookService.findAll());
+    public ResponseEntity<Page<BookResponse>> findAll(Pageable pageable) {
+        return ResponseEntity.ok(bookService.findAll(pageable));
     }
 
     // GET /books/{id} - 상세 조회
