@@ -92,13 +92,10 @@ export default function CoverGenerator({ book, onCoverSaved, isGenerating, setIs
     setIsSaving(true)
     setError('')
     try {
-      const res = await fetch(`${BOOKS_URL}/${book.id}`, {
+      const res = await fetch(`${BOOKS_URL}/${book.id}/cover`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          coverImageUrl: previewUrl,
-          updatedAt: new Date().toISOString(),
-        }),
+        body: JSON.stringify({ coverImageUrl: previewUrl }),
       })
       if (!res.ok) throw new Error('표지 저장에 실패했습니다.')
 
