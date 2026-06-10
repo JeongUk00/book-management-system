@@ -31,3 +31,6 @@ npm-debug.log*
 !.vscode/extensions.json
 .idea/
 .DS_Store
+
+# PR 초안 (로컬 전용)
+PR_*.md
