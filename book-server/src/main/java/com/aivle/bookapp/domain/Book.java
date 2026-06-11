@@ -27,7 +27,8 @@ public class Book {
     @Column(columnDefinition = "TEXT", nullable = false)
     private String content;
 
-    @Column(columnDefinition = "TEXT")
+    @Lob
+    @Column(columnDefinition = "CLOB")
     private String coverImageUrl;
 
     @CreationTimestamp

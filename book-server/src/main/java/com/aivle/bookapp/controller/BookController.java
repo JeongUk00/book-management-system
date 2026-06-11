@@ -3,6 +3,7 @@ package com.aivle.bookapp.controller;
 import com.aivle.bookapp.dto.BookCreateRequest;
 import com.aivle.bookapp.dto.BookResponse;
 import com.aivle.bookapp.dto.BookUpdateRequest;
+import com.aivle.bookapp.dto.CoverGenerateRequest;
 import com.aivle.bookapp.dto.CoverUpdateRequest;
 import com.aivle.bookapp.service.BookService;
 import jakarta.validation.Valid;
@@ -55,6 +56,15 @@ public class BookController {
             @RequestBody CoverUpdateRequest request
     ) {
         return ResponseEntity.ok(bookService.updateCover(id, request.coverImageUrl()));
+    }
+
+    // POST /books/{id}/cover/generate - AI 표지 생성 및 DB 저장
+    @PostMapping("/{id}/cover/generate")
+    public ResponseEntity<BookResponse> generateCover(
+            @PathVariable Long id,
+            @Valid @RequestBody CoverGenerateRequest request
+    ) {
+        return ResponseEntity.ok(bookService.generateAndSaveCover(id, request));
     }
 
     // DELETE /books/{id} - 삭제 (204 No Content)
