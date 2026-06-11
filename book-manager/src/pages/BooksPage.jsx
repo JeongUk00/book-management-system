@@ -283,7 +283,7 @@ export default function BooksPage() {
           <button
             type="button"
             className="btn btn-outline"
-            onClick={() => setPage(prev => Math.max(prev - 1, 0))}
+            onClick={() => { setPage(prev => Math.max(prev - 1, 0)); setSelectedIds([]) }}
             disabled={page === 0}
           >
             이전
@@ -296,7 +296,7 @@ export default function BooksPage() {
           <button
             type="button"
             className="btn btn-outline"
-            onClick={() => setPage(prev => Math.min(prev + 1, totalPages - 1))}
+            onClick={() => { setPage(prev => Math.min(prev + 1, totalPages - 1)); setSelectedIds([]) }}
             disabled={page >= totalPages - 1}
           >
             다음
