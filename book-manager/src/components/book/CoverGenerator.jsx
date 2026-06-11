@@ -48,7 +48,7 @@ export default function CoverGenerator({ book, onCoverSaved, isGenerating, setIs
     try {
       const prompt = buildPrompt()
 
-      const res = await fetch(OPENAI_IMAGE_URL, {     // 교안 28p
+      const res = await fetch(OPENAI_IMAGE_URL, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -74,7 +74,7 @@ export default function CoverGenerator({ book, onCoverSaved, isGenerating, setIs
       }
 
       const data = await res.json()
-      const b64Json = data?.data?.[0]?.b64_json     // 교안 30p
+      const b64Json = data?.data?.[0]?.b64_json
       if (!b64Json) throw new Error('이미지 데이터를 받지 못했습니다. 응답을 확인해주세요.')
 
       const imageSrc = `data:image/${outputFormat};base64,${b64Json}`
@@ -86,20 +86,30 @@ export default function CoverGenerator({ book, onCoverSaved, isGenerating, setIs
     }
   }
 
-  // 생성된 표지 json-server에 저장
+  // 생성된 표지를 이력에 저장 (POST /covers -> isActive:false)
   const handleSave = async () => {
     if (!previewUrl) return
     setIsSaving(true)
     setError('')
     try {
-      const res = await fetch(`${BOOKS_URL}/${book.id}/cover`, {
-        method: 'PATCH',
+      const res = await fetch(`${BOOKS_URL}/${book.id}/covers`, {
+        method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ coverImageUrl: previewUrl }),
+        body: JSON.stringify({
+          imageUrl: previewUrl,
+          quality,
+          size,
+          outputFormat,
+        }),
       })
-      if (!res.ok) throw new Error('표지 저장에 실패했습니다.')
 
-      onCoverSaved(previewUrl)   // 부모 상태 업데이트
+      if (!res.ok) {
+        const errData = await res.json().catch(() => ({}))
+        throw new Error(errData.message || '표지 저장에 실패했습니다.')
+      }
+
+      const saved = await res.json() // BookCoverResponse (isActive: false)
+      onCoverSaved(saved)         
       setPreviewUrl(null)
     } catch (err) {
       setError(err.message)
@@ -192,7 +202,7 @@ export default function CoverGenerator({ book, onCoverSaved, isGenerating, setIs
         {/* 에러 */}
         {error && <div className="cover-generator-error">⚠️ {error}</div>}
 
-        {/* 생성된 표지 미리보기 */}
+        {/* 생성된 표지 미리보기 모달 */}
         {previewUrl && (
           <div className="modal-overlay">
             <div className="modal-box" onClick={e => e.stopPropagation()}>
@@ -204,7 +214,7 @@ export default function CoverGenerator({ book, onCoverSaved, isGenerating, setIs
               <div className="modal-actions">
                 <p className="modal-caption">✅ 표지가 생성되었습니다. 저장하시겠습니까?</p>
                 <button className="btn btn-success" onClick={handleSave} disabled={isSaving}>
-                  {isSaving ? '저장 중...' : '💾 이 표지로 저장'}
+                  {isSaving ? '저장 중...' : '💾 이력에 저장'}
                 </button>
                 <button className="btn btn-outline" onClick={handleGenerate} disabled={isGenerating || isSaving}>
                   🔄 다시 생성
