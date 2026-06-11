@@ -107,8 +107,9 @@ export default function BooksPage() {
         if (nextPage !== page) {
           setPage(nextPage)
         } else {
+          const searchParam = appliedSearch ? `&search=${encodeURIComponent(appliedSearch)}` : ''
           const res = await fetch(
-            `${BOOKS_URL}?page=${nextPage}&size=${pageSize}&sort=createdAt,desc`
+            `${BOOKS_URL}?page=${nextPage}&size=${pageSize}&sort=createdAt,desc${searchParam}`
           )
           if (!res.ok) throw new Error(`서버 오류 (${res.status})`)
           const data = await res.json()
