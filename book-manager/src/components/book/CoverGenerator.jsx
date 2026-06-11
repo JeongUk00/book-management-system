@@ -8,6 +8,7 @@ export default function CoverGenerator({ book, onCoverSaved, isGenerating, setIs
   const [outputFormat, setOutputFormat] = useState('png')
   const [userPrompt, setUserPrompt] = useState('')
 
+  const [isSaving, setIsSaving] = useState(false)
   const [previewUrl, setPreviewUrl] = useState(null)
   const [error, setError] = useState('')
 
@@ -43,9 +44,35 @@ export default function CoverGenerator({ book, onCoverSaved, isGenerating, setIs
     }
   }
 
-  const handleConfirm = () => {
-    onCoverSaved(previewUrl)
-    setPreviewUrl(null)
+  const handleSave = async () => {
+    if (!previewUrl) return
+    setIsSaving(true)
+    setError('')
+    try {
+      const res = await fetch(`${BOOKS_URL}/${book.id}/covers`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          imageUrl: previewUrl,
+          quality,
+          size,
+          outputFormat,
+        }),
+      })
+
+      if (!res.ok) {
+        const errData = await res.json().catch(() => ({}))
+        throw new Error(errData.message || '표지 저장에 실패했습니다.')
+      }
+
+      const saved = await res.json()
+      onCoverSaved(saved)
+      setPreviewUrl(null)
+    } catch (err) {
+      setError(err.message)
+    } finally {
+      setIsSaving(false)
+    }
   }
 
   return (
@@ -142,16 +169,23 @@ export default function CoverGenerator({ book, onCoverSaved, isGenerating, setIs
                 className="modal-preview-img"
               />
               <div className="modal-actions">
-                <p className="modal-caption">✅ 표지가 생성·저장되었습니다.</p>
-                <button className="btn btn-success" onClick={handleConfirm}>
-                  확인
+                <p className="modal-caption">✅ 표지가 생성되었습니다. 저장하시겠습니까?</p>
+                <button className="btn btn-success" onClick={handleSave} disabled={isSaving}>
+                  {isSaving ? '저장 중...' : '💾 이력에 저장'}
                 </button>
                 <button
                   className="btn btn-outline"
                   onClick={handleGenerate}
-                  disabled={isGenerating}
+                  disabled={isGenerating || isSaving}
                 >
                   🔄 다시 생성
+                </button>
+                <button
+                  className="btn btn-ghost"
+                  onClick={() => setPreviewUrl(null)}
+                  disabled={isSaving}
+                >
+                  취소
                 </button>
               </div>
             </div>
