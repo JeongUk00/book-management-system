@@ -11,14 +11,23 @@ export default function BooksPage() {
   const [error, setError] = useState('')
   const [search, setSearch] = useState('')
   const [selectedIds, setSelectedIds] = useState([])
+  const [page, setPage] = useState(0)
+  const [totalPages, setTotalPages] = useState(0)
+  const [totalElements, setTotalElements] = useState(0)
+  const pageSize = 8
 
   useEffect(() => {
     const load = async () => {
       try {
-        const res = await fetch(BOOKS_URL)
+        const res = await fetch(
+          `${BOOKS_URL}?page=${page}&size=${pageSize}&sort=createdAt,desc`
+        )
         if (!res.ok) throw new Error(`서버 오류 (${res.status})`)
         const data = await res.json()
-        setBooks(data)
+        setBooks(data.content)
+        setTotalPages(data.totalPages)
+        setTotalElements(data.totalElements)
+
       } catch (err) {
         setError(err.message)
       } finally {
@@ -26,7 +35,7 @@ export default function BooksPage() {
       }
     }
     load()
-  }, [])
+  }, [page])
 
   // 클라이언트 사이드 검색 필터
   const filtered = books.filter(
@@ -86,7 +95,7 @@ export default function BooksPage() {
       {/* 페이지 헤더 */}
       <div className="page-header">
         <p className="page-subtitle">
-          {!isLoading && !error && `총 ${books.length}권의 도서가 있습니다`}
+          {!isLoading && !error && `총 ${totalElements}권의 도서가 있습니다`}
         </p>
         <Link to="/books/new" className="btn btn-primary">
           + 새 도서 등록
@@ -217,6 +226,40 @@ export default function BooksPage() {
               <BookCard book={book} />
             </div>
           ))}
+        </div>
+      )}
+
+      {!isLoading && !error && totalPages > 1 && (
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            gap: 12,
+            marginTop: 32,
+          }}
+        >
+          <button
+            type="button"
+            className="btn btn-outline"
+            onClick={() => setPage(prev => Math.max(prev - 1, 0))}
+            disabled={page === 0}
+          >
+            이전
+          </button>
+
+          <span style={{ color: '#6b7280', fontSize: 14 }}>
+            {page + 1} / {totalPages}
+          </span>
+
+          <button
+            type="button"
+            className="btn btn-outline"
+            onClick={() => setPage(prev => Math.min(prev + 1, totalPages - 1))}
+            disabled={page >= totalPages - 1}
+          >
+            다음
+          </button>
         </div>
       )}
     </main>

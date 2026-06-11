@@ -9,6 +9,8 @@ import com.aivle.bookapp.exception.BookNotFoundException;
 import com.aivle.bookapp.exception.OpenAiException;
 import com.aivle.bookapp.repository.BookRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -31,10 +33,9 @@ public class BookService {
     private final RestTemplate restTemplate;
 
     @Transactional(readOnly = true)
-    public List<BookResponse> findAll() {
-        return bookRepository.findAll().stream()
-                .map(BookResponse::from)
-                .toList();
+    public Page<BookResponse> findAll(Pageable pageable) {
+        return bookRepository.findAll(pageable)
+                .map(BookResponse::from);
     }
 
     @Transactional(readOnly = true)
