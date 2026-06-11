@@ -37,8 +37,7 @@ public class BookService {
         if (search == null || search.isBlank()) {
             return bookRepository.findAll(pageable).map(BookResponse::from);
         }
-        return bookRepository.findByTitleContainingIgnoreCaseOrAuthorContainingIgnoreCase(
-                search, search, pageable).map(BookResponse::from);
+        return bookRepository.search(search, pageable).map(BookResponse::from);
     }
 
     @Transactional(readOnly = true)
