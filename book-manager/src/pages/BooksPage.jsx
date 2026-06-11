@@ -167,7 +167,7 @@ export default function BooksPage() {
 
       {/* 에러 */}
       {!isLoading && error && (
-        <ErrorMessage message={`도서 목록을 불러오지 못했습니다. json-server가 실행 중인지 확인해주세요. (${error})`} />
+        <ErrorMessage message="도서 목록을 불러오지 못했습니다. 잠시 후 다시 시도해주세요." />
       )}
 
       {/* 빈 목록 */}
