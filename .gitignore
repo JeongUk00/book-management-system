@@ -7,14 +7,25 @@ api_key.txt
 # 로컬 DB (각자 테스트 데이터 충돌 방지 — db.sample.json을 복사해서 사용)
 db.json
 
-# 의존성
+# ── Frontend ──────────────────────────────
 node_modules/
-
-# 빌드 결과물
 dist/
 dist-ssr/
 
-# 로그
+# ── Backend (Spring Boot) ──────────────────
+book-server/target/
+book-server/.mvn/wrapper/maven-wrapper.jar
+book-server/.idea/
+book-server/*.iml
+book-server/*.iws
+book-server/*.ipr
+*.mv.db
+*.trace.db
+
+# 실수로 들어간 self-gitlink (저장소 자기 자신 참조) 재발 방지
+/4th_miniproject/
+
+# ── 공통 ──────────────────────────────────
 *.log
 npm-debug.log*
 
@@ -23,3 +34,6 @@ npm-debug.log*
 !.vscode/extensions.json
 .idea/
 .DS_Store
+
+# PR 초안 (로컬 전용)
+PR_*.md
